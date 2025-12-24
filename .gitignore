@@ -416,3 +416,31 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Node.js
+dist/
+.pnp
+.pnp.js
+
+# SQLite database
+*.db
+*.db-shm
+*.db-wal
+
+# Swagger generated
+src/Client/src/api/swagger.json
+src/Client/src/api/generated/
+
+# Docker build output
+nginx-html/
+
+# Environment specific
+appsettings.Production.json
+appsettings.Development.json
+appsettings.Staging.json
+appsettings.Local.json
+appsettings.json
+
+.claude
+claude.md
+.dev/

@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ./src/Api/Space.Api
+      dockerfile: Dockerfile
+    container_name: space-api-dev
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/space.db
+      - Jwt__Secret=DevSecretKeyThatShouldBeAtLeast32Characters!
+      - Jwt__Issuer=Space.Api
+      - Jwt__Audience=Space.Client
+      - Jwt__ExpiresInMinutes=60
+      - Jwt__RefreshTokenExpiresInDays=7
+      - AllowedOrigins__0=http://localhost:5173
+      - AllowedOrigins__1=http://localhost:3000
+    volumes:
+      - api-data-dev:/app/data
+    networks:
+      - space-network-dev
+    restart: unless-stopped
+
+volumes:
+  api-data-dev:
+
+networks:
+  space-network-dev:
+    driver: bridge

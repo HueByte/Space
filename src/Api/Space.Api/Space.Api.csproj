@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
+  </ItemGroup>
+
+  <!-- Generate OpenAPI spec and TypeScript client on build -->
+  <Target Name="GenerateOpenAPI" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <PropertyGroup>
+      <SwaggerEnvVars>SkipMigrations=true</SwaggerEnvVars>
+      <ClientPath>$(ProjectDir)..\..\Client</ClientPath>
+      <SwaggerOutput>$(ClientPath)\src\api\swagger.json</SwaggerOutput>
+    </PropertyGroup>
+
+    <!-- Create api directory if it doesn't exist -->
+    <MakeDir Directories="$(ClientPath)\src\api" Condition="!Exists('$(ClientPath)\src\api')" />
+
+    <!-- Generate swagger.json -->
+    <Exec Command="dotnet swagger tofile --output &quot;$(SwaggerOutput)&quot; &quot;$(OutputPath)$(AssemblyName).dll&quot; v1" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="$(SwaggerEnvVars)" ContinueOnError="true" />
+
+    <!-- Generate TypeScript client using openapi-typescript-codegen -->
+    <Exec Command="npx openapi-typescript-codegen --input src/api/swagger.json --output src/api/generated --client axios --useOptions --useUnionTypes" WorkingDirectory="$(ClientPath)" ContinueOnError="true" Condition="Exists('$(SwaggerOutput)')" />
+
+    <Message Importance="high" Text="OpenAPI spec and TypeScript client generated successfully" />
+  </Target>
+
+</Project>

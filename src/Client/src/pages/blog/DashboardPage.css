@@ -1,0 +1,122 @@
+.dashboard-page {
+  padding: var(--space-8) var(--space-6);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Posts Table */
+.posts-table {
+  overflow-x: auto;
+}
+
+.posts-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.posts-table th,
+.posts-table td {
+  padding: var(--space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.posts-table th {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.posts-table tbody tr:hover {
+  background: var(--color-bg-hover);
+}
+
+.post-title-link {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.post-title-link:hover {
+  color: var(--color-accent);
+}
+
+.table-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Empty State */
+.empty-state svg {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+}
+
+.modal {
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal__title {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-6);
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.form-group--checkbox label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: var(--text-sm);
+}
+
+.form-group--checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .posts-table th:nth-child(3),
+  .posts-table td:nth-child(3) {
+    display: none;
+  }
+}

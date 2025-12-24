@@ -1,0 +1,57 @@
+services:
+  api:
+    build:
+      context: ./src/Api/Space.Api
+      dockerfile: Dockerfile
+    container_name: space-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/space.db
+      - Jwt__Secret=${JWT_SECRET:-YourSuperSecretKeyThatShouldBeAtLeast32CharactersLongInProduction!}
+      - Jwt__Issuer=Space.Api
+      - Jwt__Audience=Space.Client
+      - Jwt__ExpiresInMinutes=60
+      - Jwt__RefreshTokenExpiresInDays=7
+      - AllowedOrigins__0=http://localhost
+      - AllowedOrigins__1=http://localhost:80
+      - Admin__Email=${ADMIN_EMAIL:-admin@space.local}
+      - Admin__Password=${ADMIN_PASSWORD:-Admin123!}
+    volumes:
+      - api-data:/app/data
+    networks:
+      - space-network
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./src/Client
+      dockerfile: Dockerfile
+      target: build
+    container_name: space-client-build
+    volumes:
+      - client-dist:/app/dist
+    command: ["sh", "-c", "cp -r /app/dist/* /output/"]
+    profiles:
+      - build
+
+  nginx:
+    image: nginx:alpine
+    container_name: space-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - client-dist:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+    networks:
+      - space-network
+    restart: unless-stopped
+
+volumes:
+  api-data:
+  client-dist:
+
+networks:
+  space-network:
+    driver: bridge
